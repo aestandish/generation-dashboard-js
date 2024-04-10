@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Colorify</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="./index.css">
     <script src="https://cdn.plot.ly/plotly-2.3.0.min.js" charset="utf-8"></script>
     <script src="./index.js" defer></script>
@@ -21,7 +21,11 @@
             </ul>
             <hr>
             <h5>Select a year to view:</h5>
-            <select id="year-dropdown"></select>
+            <select name="years" id="year-dropdown">
+                <option value="2015">2015</option>
+                <option value="2016">2016</option>
+                <option value="2017">2017</option>
+            </select>
         </div>
         <div id="content" style="background-color: whitesmoke; padding: 20px; border-radius: 5px; margin-bottom: 20px; margin-left: 17.5rem;">
             <h1 style="color: rgb(98, 95, 95);">Welcome to the Generation and Emissions Analytics Dashboard!</h1>
