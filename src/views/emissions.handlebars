@@ -1,5 +1,19 @@
 <h1 style="color: rgb(98, 95, 95);">Welcome to the Generation and Emissions Analytics Dashboard!</h1>
 <p style="color: rgb(98, 95, 95);">This dashboard analyzes U.S. Department of Energy power generation and emissions trends over time. Navigate to the sidebar to start exploring the data!</p>
+<div id="test"></div>
+<div id="test1"></div>
+<script>
+	TESTER = document.getElementById('test');
+	Plotly.newPlot( TESTER, [{
+	x: [2000, 2001, 2002, 2003, 2004, 2005],
+	y: [1, 2, 4, 8, 16] }], {
+	margin: { t: 0 } } );
+    TESTER2 = document.getElementById('test1');
+	Plotly.newPlot( TESTER2, [{
+	x: [2000, 2001, 2002, 2003, 2004, 2005],
+	y: [1, 2, 4, 8, 16] }], {
+	margin: { t: 0 } } );
+</script>
 
 
 

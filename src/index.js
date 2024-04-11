@@ -4,6 +4,24 @@ import path from 'path';
 import fs from 'fs';
 import csv from 'csv-parser';
 
+// pull data
+const generationCSV = 'data/generation.csv';
+
+const genData = { x: [], y: [] };
+
+fs.createReadStream(generationCSV)
+    .pipe(csv())
+    .on('data', (data) => {
+        let ngValue = parseInt(data.NG.replace(/,/g, ''));
+        ngValue = isNaN(ngValue) ? 0 : ngValue;
+        genData.x.push(ngValue);
+        let date = data.Local_date;
+        genData.y.push(date);
+    })
+    .on('end', () => {
+        console.log(genData);
+    });
+
 const app = express();
 
 // Fetch the app directory to set static file shortcut
