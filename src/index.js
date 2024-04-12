@@ -3,31 +3,38 @@ import { engine } from 'express-handlebars';
 import path from 'path';
 import fs from 'fs';
 import csv from 'csv-parser';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 // pull data
 const generationCSV = 'data/generation.csv';
+function getData(file, type) {
+    let data = {ng: [], date: []};
+    return new Promise((resolve, reject) => {
+        fs.createReadStream(file)
+            .on('error', error => {
+                reject(error);
+            })
+            .pipe(csv())
+            .on('data', (row) => {
+                let ngValue = parseFloat(row.NG.replace(/,/g, ''));
+                ngValue = isNaN(ngValue) ? 0 : ngValue;
+                let date = new Date(row.Local_date);
 
-const genData = { x: [], y: [] };
-
-fs.createReadStream(generationCSV)
-    .pipe(csv())
-    .on('data', (data) => {
-        let ngValue = parseInt(data.NG.replace(/,/g, ''));
-        ngValue = isNaN(ngValue) ? 0 : ngValue;
-        genData.x.push(ngValue);
-        let date = data.Local_date;
-        genData.y.push(date);
-    })
-    .on('end', () => {
-        console.log(genData);
+                data.ng.push(ngValue);
+                data.date.push(date)
+            })
+            .on('end', () => {
+                resolve(data);
+            });
     });
+}
+
+const data = await getData(generationCSV, {});
 
 const app = express();
 
 // Fetch the app directory to set static file shortcut
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.engine('handlebars', engine());
@@ -36,7 +43,11 @@ app.set('views', path.join(__dirname, 'views')); // Use __dirname to set absolut
 app.use(express.static(path.join(__dirname, '/public')));
 
 app.get('/', (req, res) => {
-    res.render('home');
+    res.redirect('/generation');
+});
+
+app.get('/api/data', (req, res) => {
+    res.json(data);
 });
 
 app.get('/generation', (req, res) => {
