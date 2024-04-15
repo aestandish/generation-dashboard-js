@@ -6,10 +6,10 @@ This Javascript app is designed to provide simple visuals that allow the user to
 
 To clone this repository, run:
 ```
-git clone https://github.com/aestandish/Python-Project.git
+[git clone https://github.com/aestandish/Python-Project.git](https://github.com/aestandish/generation-dashboard-js.git)
 ```
 
-# Setup instructions
+## Setup instructions
 
 1) Download and install Node.js v18.20.1 for your specific system:
 https://nodejs.org/en/download
