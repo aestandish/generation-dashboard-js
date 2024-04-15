@@ -6,7 +6,7 @@ This Javascript app is designed to provide simple visuals that allow the user to
 
 To clone this repository, run:
 ```
-[git clone https://github.com/aestandish/Python-Project.git](https://github.com/aestandish/generation-dashboard-js.git)
+git clone https://github.com/aestandish/generation-dashboard-js.git
 ```
 
 ## Setup instructions
