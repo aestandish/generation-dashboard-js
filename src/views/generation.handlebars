@@ -1,19 +1,109 @@
-<h1 style="color: rgb(98, 95, 95);">Welcome to the Generation and Emissions Analytics Dashboard!</h1>
-<p style="color: rgb(98, 95, 95);">This dashboard analyzes U.S. Department of Energy power generation and emissions trends over time. Navigate to the sidebar to start exploring the data!</p>
-<div id="test"></div>
+<div id="sidebar">
+    <h4>Select data to view:</h4>
+    <hr>
+    <ul>
+        <li><a href="/generation" id="generation-link">Generation</a></li>
+        <li><a href="/emissions" id="emissions-link">Emissions</a></li>
+    </ul>
+    <hr>
+    <h5>Select a year to view:</h5>
+    <select onchange="update_generation_graphs();" name="years" id="year-dropdown">
+        {{#each years}}
+            <option value="{{this}}">{{this}}</option>
+        {{/each}}
+    </select>
+    
+</div>
+<div id="content" style="background-color: whitesmoke; padding: 20px; border-radius: 5px; margin-bottom: 20px; margin-left: 17.5rem;">
+    <h1 style="color: rgb(98, 95, 95);">Welcome to the Generation and Emissions Analytics Dashboard!</h1>
+    <p style="color: rgb(98, 95, 95);">This dashboard analyzes U.S. Department of Energy power generation and emissions trends over time. Navigate to the sidebar to start exploring the data!</p>
+    <div id="generation-line-graph"></div>
+    <div id="generation-heatmap"></div>
+</div>
 <script>
-    fetch('/api/data').then(function(response) {
-    return response.json();
-    }).then(function(data) {
-        TESTER = document.getElementById('test');
-        Plotly.newPlot( TESTER, [{
-        x: data.date,
-        y: data.ng }], {
-            xaxis: {
-            range: ["2016-01-01", "2016-12-31"],
-            type: 'date'
-        } } );    
-    }).catch(function(err) {
-    console.log('Fetch Error :-S', err);
-    });
+    function update_generation_graphs() {
+        update_gen_daily_graph();
+        update_gen_hourly_graph();
+    }
+
+    // Embed plotly graphs in functions so that they can be called from handlebars on select update
+    function update_gen_daily_graph() {
+        // Fetch data from the API and build the line graph
+        fetch('/api/data_daily').then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            // Fetch the element to embed the graph and the year selected
+            year = document.getElementById('year-dropdown').value;
+            line_div = document.getElementById('generation-line-graph');
+            heat_div = document.getElementById('generation-heatmap');
+
+            var line_content = {
+                x: data.date,
+                y: data.ng
+            };
+
+            var line_layout = {
+                title: {
+                    text: `Net generation by Date for ${year} (mWh)`,
+                    xanchor: 'right',
+                    x: 0.32
+                },
+                xaxis: {
+                    title: 'Date',
+                    range: [`${year}-01-01`, `${year}-12-31`],
+                    type: 'date'
+                },
+                yaxis: {
+                    title: 'Net generation (mWh)'
+                }
+            };
+
+            // Build the line graph
+            Plotly.newPlot( line_div, [line_content], line_layout); 
+        }).catch(function(err) {
+        console.log('Fetch Error :-S', err);
+        });
+    }
+
+    function update_gen_hourly_graph() {
+        // Fetch data from the API and build the line graph
+        fetch('/api/data_hourly').then(function(response) {
+        return response.json();
+        }).then(function(data) {
+            // Fetch the element to embed the graph and the year selected
+            year = document.getElementById('year-dropdown').value;
+            heat_div = document.getElementById('generation-heatmap');
+
+            var heat_content = {
+                x: data.date,
+                y: data.hour,
+                z: data.ng,
+                type: 'heatmap',
+                colorscale: 'Viridis'
+            };
+
+            var heat_layout = {
+                title: {
+                    text: `Average Hourly Net Generation Heatmap for ${year}`,
+                    xanchor: 'right',
+                    x: 0.4
+                },
+                xaxis: {
+                    title: 'Date',
+                    range: [`${year}-01-01`, `${year}-12-31`],
+                    type: 'date'
+                },
+                yaxis: {
+                    title: 'Hour'
+                }
+            };
+
+            // Build the heatmap
+            Plotly.newPlot( heat_div, [heat_content], heat_layout);  
+        }).catch(function(err) {
+        console.log('Fetch Error :-S', err);
+        });
+    }
+
+    update_generation_graphs();
 </script>
